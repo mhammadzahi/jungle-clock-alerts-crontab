@@ -3,6 +3,7 @@ import psycopg2
 from datetime import datetime
 import pytz
 from dotenv import load_dotenv
+from send_email import send_alert_email
 import os
 
 load_dotenv()
