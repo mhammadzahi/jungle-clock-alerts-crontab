@@ -57,7 +57,7 @@ def get_admin_email(admin_id):
         query = """
             SELECT email
             FROM admins
-            WHERE id = %s
+            WHERE admin_id = %s
         """
         cur.execute(query, (admin_id,))
         result = cur.fetchone()
@@ -73,6 +73,8 @@ def get_admin_email(admin_id):
         print(f"Database error: {e}")
         return None
 
+
+
 def get_employee_names(employee_ids):
     try:
         # Connect to the database
@@ -81,9 +83,9 @@ def get_employee_names(employee_ids):
 
         # Query: Get employee names by employee_ids
         query = """
-            SELECT name
+            SELECT full_name
             FROM employees
-            WHERE id = ANY(%s)
+            WHERE employee_id = ANY(%s)
         """
         cur.execute(query, (employee_ids,))
         results = cur.fetchall()
@@ -102,9 +104,13 @@ def get_employee_names(employee_ids):
 if __name__ == "__main__":
     result = get_absent_employees()
 
-    print(result)
+    #print(result)
 
     for admin_id, employee_ids in result.items():
-        #to = get_admin_email(admin_id)
-        #employee_names = get_employee_names(employee_ids)
-        #send_alert_email(to, employee_names)
+        to = get_admin_email(admin_id)
+        employee_names = get_employee_names(employee_ids)
+    
+        if to != "noreplay@jungleclock.com":
+            print(to)
+            send_alert_email(to, employee_names)
+
