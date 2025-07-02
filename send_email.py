@@ -27,7 +27,7 @@ def send_alert_email(to, employee_names):
         message = MIMEMultipart()
         message['from'] = 'JungleClock <noreplay@jungleclock.com>'
         message['to'] = to
-        message['subject'] = f'Absence Alert: {employee_names_str} | {datetime.now().strftime("%Y-%m-%d")}'
+        message['subject'] = f'Employee(s) has not Clocked-in Today: {employee_names_str} | {datetime.now().strftime("%Y-%m-%d")}'
         message.attach(MIMEText(message_text, 'html'))
 
         raw_message = base64.urlsafe_b64encode(message.as_bytes()).decode()

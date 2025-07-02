@@ -110,7 +110,7 @@ if __name__ == "__main__":
         to = get_admin_email(admin_id)
         employee_names = get_employee_names(employee_ids)
     
-        if to != "noreplay@jungleclock.com":
-            print(to)
+    
+        if to != "noreplay@jungleclock.com": # remove my account
             send_alert_email(to, employee_names)
 
