@@ -9,13 +9,15 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
 
 
-def send_alert_email(to, subject, employee_name):# done
+def send_alert_email(to, employee_names):
+    employee_names_str = ", ".join(employee_names)
+    
     try:
         with open('alert_email.html', 'r') as f:
             message_text = f.read()
 
 
-        message_text = message_text.replace('{{ employee_name }}', employee_name)
+        message_text = message_text.replace('{{ employee_names }}', employee_names_str)
 
         creds = Credentials.from_authorized_user_file('jungle_clock_out.json', SCOPES)
         service = build('gmail', 'v1', credentials=creds)
@@ -23,7 +25,7 @@ def send_alert_email(to, subject, employee_name):# done
         message = MIMEMultipart()
         message['from'] = 'JungleClock <noreplay@jungleclock.com>'
         message['to'] = to
-        message['subject'] = subject
+        message['subject'] = f'Absence Alert: {employee_name} | {datetime.now().strftime("%Y-%m-%d")}'
         message.attach(MIMEText(message_text, 'html'))
 
         raw_message = base64.urlsafe_b64encode(message.as_bytes()).decode()

@@ -47,7 +47,64 @@ def get_absent_employees():
         return {}
 
 
+def get_admin_email(admin_id):
+    try:
+        # Connect to the database
+        conn = psycopg2.connect(DB_URL)
+        cur = conn.cursor()
+
+        # Query: Get admin email by admin_id
+        query = """
+            SELECT email
+            FROM admins
+            WHERE id = %s
+        """
+        cur.execute(query, (admin_id,))
+        result = cur.fetchone()
+
+        cur.close()
+        conn.close()
+
+        if result:
+            return result[0]
+        return None
+
+    except psycopg2.Error as e:
+        print(f"Database error: {e}")
+        return None
+
+def get_employee_names(employee_ids):
+    try:
+        # Connect to the database
+        conn = psycopg2.connect(DB_URL)
+        cur = conn.cursor()
+
+        # Query: Get employee names by employee_ids
+        query = """
+            SELECT name
+            FROM employees
+            WHERE id = ANY(%s)
+        """
+        cur.execute(query, (employee_ids,))
+        results = cur.fetchall()
+
+        cur.close()
+        conn.close()
+
+        # Extract names from the results
+        return [row[0] for row in results]
+
+    except psycopg2.Error as e:
+        print(f"Database error: {e}")
+        return []
+
 
 if __name__ == "__main__":
     result = get_absent_employees()
+
     print(result)
+
+    for admin_id, employee_ids in result.items():
+        #to = get_admin_email(admin_id)
+        #employee_names = get_employee_names(employee_ids)
+        #send_alert_email(to, employee_names)
